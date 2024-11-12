@@ -1,5 +1,5 @@
 .blogpartcontent{
-    color: #291571;
+    color: #291571 !important;
     text-align: justify;
 }
 .imdm{
@@ -9,10 +9,11 @@
 
 @media (min-width:769px){
     .imdm{
-        height: 250px;
-      
+        height: 250px; 
     }
 }
 
-
+.custom-color1{
+    color: #291571 !important;   
+}
 

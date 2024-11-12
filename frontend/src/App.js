@@ -61,6 +61,7 @@ import BlogDisplay from "./Landingpage/BlogDisplay/BlogDisplay";
 import BlogUpdate from "./Landingpage/BlogDisplay/BlogUpdate";
 import EditorBlog from "./Landingpage/Editorblog/Editorblog";
 import Blogupdation from "./Landingpage/Blogupdation/Blogupdation";
+import Footerblog from "./Landingpage/Footerblog/Footerblog";
 
 function App() {
   return (
@@ -112,7 +113,7 @@ function App() {
           />
           <Route
             path="/blogs"
-            element={[<Menubar />, <Blogviewed />, <Footercard />, <Footer />]}
+            element={[<Menubar />, <Blogviewed />, <Footercard />, <Footerblog/>]}
           />
           <Route
             path="/imp"
@@ -151,11 +152,11 @@ function App() {
               <Autopopup />,
             ]}
           />
-          <Route path="/Digital_Marketing_Blog/:id" element={<Dmblogview />} />
-          <Route path="/Sap_blog/:id" element={[<Menubar />,<Sapblogview />,<Footercard />,<Footer />]} />
+          <Route path="/Digital_Marketing_Blog/:id" element={[<Menubar />,<Dmblogview />,<Footercard />,<Footerblog/>]} />
+          <Route path="/Sap_blog/:id" element={[<Menubar />,<Sapblogview />,<Footercard />,<Footerblog/>]} />
           <Route
             path="/IT_Blog/:id"
-            element={[<Menubar />, <Blogit />, <Footercard />, <Footer />]}
+            element={[<Menubar />, <Blogit />, <Footercard />, <Footerblog/>]}
           />
           <Route
             path="/crm"

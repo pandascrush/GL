@@ -14,7 +14,7 @@ function Dmblogview() {
   const [error, setError] = useState("");
 
   const { id } = useParams();
-  const decodedId = atob(id)
+  // const decodedId = atob(id)
   const [blog, setBlog] = useState(null);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
   const [categoryId, setCategoryId] = useState();
@@ -22,7 +22,7 @@ function Dmblogview() {
   useEffect(() => {
     // Fetch the main blog data
     axios
-      .get(`https://kggeniuslabs.com:5000/blogs/${decodedId}`)
+      .get(`http://localhost:5000/blogs/${id}`)
       .then((res) => {
         setBlog(res.data);
         setCategoryId(res.data.category_id);
@@ -30,13 +30,13 @@ function Dmblogview() {
       .catch((error) => {
         console.error("Error fetching blog data:", error);
       });
-  }, [decodedId]);
+  }, [id]);
 
   useEffect(() => {
     // Fetch related blogs based on category_id and exclude the current blog
     if (categoryId) {
       axios
-        .get(`https://kggeniuslabs.com:5000/relatedBlogs/${categoryId}/${decodedId}`)
+        .get(`http://localhost:5000/relatedBlogs/${categoryId}/${id}`)
         .then((res) => {
           setRelatedBlogs(res.data);
         })
@@ -44,7 +44,7 @@ function Dmblogview() {
           console.error("Error fetching related blogs:", error);
         });
     }
-  }, [categoryId, decodedId]);
+  }, [categoryId, id]);
 
   const validateURL = (inputURL) => {
     const urlPattern = new RegExp(
@@ -68,7 +68,7 @@ function Dmblogview() {
     setError("");
 
     axios
-      .post(`https://kggeniuslabs.com:5000/add-url`, { url })
+      .post(`http://localhost:5000/add-url`, { url })
       .then((res) => {
         console.log(res);
         if (res.data.message === "URL inserted successfully") {
@@ -101,8 +101,8 @@ function Dmblogview() {
                 />
               </div>
               <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-              <h5 className="text-dark fw-bold">Conclusion</h5>
-              <p className="text-dark">{blog.conclusion}</p>
+              <h5 className="fw-bold">Conclusion</h5>
+              <p>{blog.conclusion}</p>
             </>
           ) : (
             <p>Loading...</p>
@@ -142,7 +142,7 @@ function Dmblogview() {
           <div>
             {relatedBlogs.map((relatedBlog) => (
               <Link
-                to={`/IT_Blog/${btoa(relatedBlog.id)}`}
+                to={`/Digital_Marketing_Blog/${relatedBlog.unique_identifier}`}
                 key={relatedBlog.id}
                 style={{ textDecoration: "none" }}
               >

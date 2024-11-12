@@ -8,12 +8,12 @@ function Dmblog() {
   const navigate = useNavigate();
 
   const handleReadMoreClick = (id) => {
-    navigate(`/Digital_Marketing_Blog/${btoa(id)}`); // Navigate to the blog details page with the blog id
+    navigate(`/Digital_Marketing_Blog/${id}`); // Navigate to the blog details page with the blog id
   };
 
   useEffect(() => {
     axios
-      .get(`https://kggeniuslabs.com:5000/blogs/category/3`)
+      .get(`http://localhost:5000/blogs/category/3`)
       .then((res) => {
         console.log(res.data);
         setBlogs(res.data); // Store the fetched data in state
@@ -37,10 +37,10 @@ function Dmblog() {
                 className="card-img-top"
               />
               <div className="card-body">
-                <h5 className="card-title">{blog.title}</h5>
+                <h5 className="card-title title-ellipsis">{blog.title}</h5>
                 <button
                   className="readbtn rounded-3 p-2"
-                  onClick={() => handleReadMoreClick(blog.id)}
+                  onClick={() => handleReadMoreClick(blog.unique_identifier)}
                 >
                   Read More
                 </button>

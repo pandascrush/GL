@@ -13,14 +13,14 @@ function Sapblogview() {
   const navigate = useNavigate();
 
   const { id } = useParams();
-  const decodedId = atob(id);
+  // const decodedId = atob(id);
   const [blog, setBlog] = useState(null);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
   const [categoryId, setCategoryId] = useState();
 
   useEffect(() => {
     axios
-      .get(`https://kggeniuslabs.com:5000/blogs/${decodedId}`)
+      .get(`http://localhost:5000/blogs/${id}`)
       .then((res) => {
         setBlog(res.data);
         setCategoryId(res.data.category_id);
@@ -28,28 +28,28 @@ function Sapblogview() {
       .catch((error) => {
         console.error("Error fetching blog data:", error);
       });
-  }, [decodedId]);
+  }, [id]);
 
   useEffect(() => {
     // Fetch related blogs based on category_id and exclude the current blog
     if (categoryId) {
       axios
-        .get(`https://kggeniuslabs.com:5000/relatedBlogs/${categoryId}/${decodedId}`)
+        .get(`http://localhost:5000/relatedBlogs/${categoryId}/${id}`)
         .then((res) => {
+          console.log(res.data);
           setRelatedBlogs(res.data);
         })
         .catch((error) => {
           console.error("Error fetching related blogs:", error);
         });
     }
-  }, [categoryId, decodedId]);
+  }, [categoryId, id]);
 
   const handleClick = () => {
     navigate("/Sap_blog1");
   };
   return (
     <div className="container-fluid blogpartcontent p-0 m-0">
-     
       <div className="row my-3 mx-3">
         <div className="col-sm-12 col-lg-7">
           {blog ? (
@@ -61,27 +61,29 @@ function Sapblogview() {
                 <img
                   src={blog.blog_image.replace("\\", "/")}
                   alt={blog.title}
-                  className="imsp py-3"
+                  className="imsp py-3 blogpartcontent"
                 />
               </div>
-              <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-              <h5 className="text-dark fw-bold">Conclusion</h5>
-              <p className="text-dark">{blog.conclusion}</p>
+              <div
+                dangerouslySetInnerHTML={{ __html: blog.content }}
+                style={{ color: "#291750" }}
+              />
+              <h5 className="fw-bold">Conclusion</h5>
+              <p>{blog.conclusion}</p>
             </>
           ) : (
             <p>Loading...</p>
           )}
         </div>
-<div className="col-sm-0 col-lg-1"></div>
+        <div className="col-sm-0 col-lg-1"></div>
         <div className="col-sm-12 col-lg-4">
           <div className="latestupdate">
             <h2 className="my-4">
               <b>Latest Updates</b>
-         
             </h2>
             {relatedBlogs.map((relatedBlog) => (
               <Link
-                to={`/Sap_blog/${btoa(relatedBlog.id)}`}
+                to={`/Sap_blog/${relatedBlog.unique_identifier}`}
                 key={relatedBlog.id}
                 style={{ textDecoration: "none" }}
               >
@@ -90,7 +92,6 @@ function Sapblogview() {
                     src={relatedBlog.blog_image.replace("\\", "/")}
                     alt={relatedBlog.title}
                     className="card-img-top"
-                    
                   />
                   <div className="card-body">
                     <h5 className="card-title">
@@ -109,7 +110,6 @@ function Sapblogview() {
           </div>
         </div>
       </div>
-     
     </div>
   );
 }

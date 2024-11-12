@@ -12,17 +12,19 @@ function Blogviewed() {
     setBlogs([]);
     if (selectedCategory === "All") {
       axios
-        .get(`https://kggeniuslabs.com:5000/blogs?t=${Date.now()}`)
+        .get(`http://localhost:5000/blogs?t=${Date.now()}`)
         .then((res) => {
+          console.log(res.data);
           setBlogs(res.data);
         })
         .catch((err) => console.error("Error fetching blogs:", err));
     } else if (categoryId) {
       axios
         .get(
-          `https://kggeniuslabs.com:5000/blogs/category/${categoryId}?t=${Date.now()}`
+          `http://localhost:5000/blogs/category/${categoryId}?t=${Date.now()}`
         )
         .then((res) => {
+          console.log(res.data);
           setBlogs(res.data);
         })
         .catch((err) => console.error("Error fetching category blogs:", err));
@@ -48,14 +50,14 @@ function Blogviewed() {
   };
 
   // Determine path based on category_id
-  const getPath = (category_id, blogId) => {
+  const getPath = (category_id, unique_identifier) => {
     switch (category_id) {
       case 1:
-        return `/Sap_blog/${btoa(blogId)}`;
+        return `/Sap_blog/${unique_identifier}`;
       case 2:
-        return `/IT_Blog/${btoa(blogId)}`;
+        return `/IT_Blog/${unique_identifier}`;
       case 3:
-        return `/Digital_Marketing_Blog/${btoa(blogId)}`;
+        return `/Digital_Marketing_Blog/${unique_identifier}`;
       default:
         return "/";
     }
@@ -92,7 +94,7 @@ function Blogviewed() {
           >
             <Link
               style={{ textDecoration: "none" }}
-              to={getPath(blog.category_id, blog.id)}
+              to={getPath(blog.category_id, blog.unique_identifier)}
             >
               <div className="card shadowcard my-4">
                 <img

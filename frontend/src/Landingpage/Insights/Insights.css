@@ -16,6 +16,16 @@
 .readbtn:hover{
     text-decoration: underline;
 }
+
+.title-ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
+  
 @media (max-width:768px){
     .insightspart{
         margin: 0px;

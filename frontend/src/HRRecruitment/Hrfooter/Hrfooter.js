@@ -41,7 +41,7 @@ const year = date.getFullYear();
       rel='noopener noreferrer'> Coimbatore
    
     <span className='d-none d-md-block mt-2'>
-      KGiSL Campus, 365 Thudiyalur Road, Saravanampatti, Coimbatore – 641035, Tamil Nadu, India.
+      KGiSL Campus, 365 Thudiyalur Road, Saravanampatti,<br/> Coimbatore – 641035,<br/> Tamil Nadu, India.
     </span>
     </a>
   </p>

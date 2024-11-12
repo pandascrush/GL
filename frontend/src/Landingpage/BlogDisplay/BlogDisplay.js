@@ -17,7 +17,7 @@ function BlogDisplay() {
         <div className='col-sm-12 col-lg-7 bg-light'>
           <h1 style={{color:"#291571", fontSize:"40px", fontWeight:"700"}} className='text-start my-4'>{title}</h1>
           {image && <img src={image} alt={category} style={{ maxWidth: '100%', height: 'auto' }} accept="jpg,png,jpeg,webp" />}
-          <div dangerouslySetInnerHTML={{ __html: content }} />
+          <div style={{color:"#291571"}} dangerouslySetInnerHTML={{ __html: content }} />
           <h4>Conclusion</h4>
           <p>{conclusion}</p>
           <button className="btn btn-primary mt-3" onClick={handleUpdateClick}>

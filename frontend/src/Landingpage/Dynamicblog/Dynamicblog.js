@@ -13,6 +13,7 @@ function Dynamicblog() {
   const [categories, setCategories] = useState([]); // State for categories
   const [conclusion, setConclusion] = useState("");
   const [title, setTitle] = useState(""); // State for blog title
+  const [shortTitle, setShortTitle] = useState("");
   const [image, setImage] = useState(null); // State for image
   const navigate = useNavigate();
 
@@ -29,7 +30,7 @@ function Dynamicblog() {
 
   useEffect(() => {
     axios
-      .get("https://kggeniuslabs.com:5000/blog_categories")
+      .get("http://localhost:5000/blog_categories")
       .then((res) => {
         setCategories(res.data); // Store categories in state
       })
@@ -44,6 +45,7 @@ function Dynamicblog() {
     const formData = new FormData();
     formData.append("categoryId", category);
     formData.append("title", title);
+    formData.append("stitle", shortTitle);
     formData.append("content", content);
     formData.append("conclusion", conclusion);
     if (image) {
@@ -53,19 +55,20 @@ function Dynamicblog() {
     console.log(formData);
 
     axios
-      .post("https://kggeniuslabs.com:5000/add-blog", formData, {
+      .post("http://localhost:5000/add-blog", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
       .then((res) => {
-        console.log("Blog added successfully:", res.data);
+        console.log(res.data);
         if (res.data.message === "Blog added successfully!") {
           toast.success("Blog added successfully!"); // Show success message
-          navigate(`/BlogEditor`)
+          navigate(`/BlogEditor`);
           // Clear all fields
           setCategory("");
           setTitle("");
+          setShortTitle("")
           setImage(null);
           setContent("");
           setConclusion("");
@@ -116,6 +119,23 @@ function Dynamicblog() {
                   placeholder="Enter the blog title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Blog Short Title */}
+            <div className="my-3 row form-group">
+              <label htmlFor="title" className="col-sm-2">
+                Blog Short Title
+              </label>
+              <div className="col-sm-10">
+                <input
+                  type="text"
+                  id="title"
+                  className="form-control form-control1 blogviewtitle"
+                  placeholder="Enter the blog Short title"
+                  value={shortTitle}
+                  onChange={(e) => setShortTitle(e.target.value)}
                 />
               </div>
             </div>

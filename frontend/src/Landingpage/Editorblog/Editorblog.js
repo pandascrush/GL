@@ -12,7 +12,7 @@
 //     setBlogs([]);
 //     if (selectedCategory === "All") {
 //       axios
-//         .get(`https://kggeniuslabs.com:5000/blogs?t=${Date.now()}`)
+//         .get(`http://localhost:5000/blogs?t=${Date.now()}`)
 //         .then((res) => {
 //           setBlogs(res.data);
 //         })
@@ -20,7 +20,7 @@
 //     } else if (categoryId) {
 //       axios
 //         .get(
-//           `https://kggeniuslabs.com:5000/blogs/category/${categoryId}?t=${Date.now()}`
+//           `http://localhost:5000/blogs/category/${categoryId}?t=${Date.now()}`
 //         )
 //         .then((res) => {
 //           setBlogs(res.data);
@@ -137,9 +137,9 @@ function Blogviewed() {
     setBlogs([]);
     if (selectedCategory === "All") {
       axios
-        .get(`https://kggeniuslabs.com:5000/content/blogs?t=${Date.now()}`)
+        .get(`http://localhost:5000/content/blogs?t=${Date.now()}`)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
 
           setBlogs(res.data);
         })
@@ -147,7 +147,7 @@ function Blogviewed() {
     } else if (categoryId) {
       axios
         .get(
-          `https://kggeniuslabs.com:5000/blogs/content/category/${categoryId}?t=${Date.now()}`
+          `http://localhost:5000/blogs/content/category/${categoryId}?t=${Date.now()}`
         )
         .then((res) => {
           console.log(res.data);
@@ -176,21 +176,21 @@ function Blogviewed() {
   };
 
   const handleAddBlogClick = () => {
-    navigate("/Dynamic_blog");
+    navigate(`/Dynamic_blog/${id}`);
   };
 
   const handleupdate = (a) => {
     navigate(`/UpdateBlog/${btoa(a)}/${id}`);
   };
 
-  const getPath = (category_id, blogId) => {
+  const getPath = (category_id, blogId) => {    
     switch (category_id) {
       case 1:
-        return `/Sap_blog/${btoa(blogId)}`;
+        return `/Sap_blog/${blogId}`;
       case 2:
-        return `/IT_Blog/${btoa(blogId)}`;
+        return `/IT_Blog/${blogId}`;
       case 3:
-        return `/Digital_Marketing_Blog/${btoa(blogId)}`;
+        return `/Digital_Marketing_Blog/${blogId}`;
       default:
         return "/";
     }
@@ -198,7 +198,7 @@ function Blogviewed() {
 
   const deleteBlog = (blogId) => {
     axios
-      .delete(`https://kggeniuslabs.com:5000/blogs/delete/${blogId}`)
+      .delete(`http://localhost:5000/blogs/delete/${blogId}`)
       .then((res) => {
         if (res.data.message === "Blog deleted successfully") {
           alert("Blog deleted successfully!");
@@ -215,7 +215,7 @@ function Blogviewed() {
 
   const togglePublish = (blogId, currentStatus) => {
     axios
-      .put(`https://kggeniuslabs.com:5000/blogs/togglePublish/${blogId}`)
+      .put(`http://localhost:5000/blogs/togglePublish/${blogId}`)
       .then((res) => {
         if (res.data.success) {
           setBlogs((prevBlogs) =>
@@ -287,7 +287,7 @@ function Blogviewed() {
                 <div className="d-flex justify-content-around">
                   <Link
                     style={{ textDecoration: "none" }}
-                    to={getPath(blog.category_id, blog.id)}
+                    to={getPath(blog.category_id, blog.unique_identifier)}
                     className="btn btn-outline-info"
                   >
                     View

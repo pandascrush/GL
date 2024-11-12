@@ -7,21 +7,23 @@ import { useNavigate, useParams } from "react-router-dom";
 function Blogupdation() {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+  const [shortTitle, setShortTitle] = useState("");
   const [category, setCategory] = useState("");
   const [conclusion, setConclusion] = useState("");
   const [blogImage, setBlogImage] = useState(null); // For image file input
   const [imagePath, setImagePath] = useState(""); // For displaying existing image
-  const { id,userid } = useParams();
+  const { id, userid } = useParams();
   const decodedId = atob(id);
 
-  const nav = useNavigate()
+  const nav = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`https://kggeniuslabs.com:5000/update/getblogs/${decodedId}`)
+      .get(`http://localhost:5000/update/getblogs/${decodedId}`)
       .then((res) => {
         console.log(res.data);
         setTitle(res.data.title);
+        setShortTitle(res.data.unique_identifier)
         setContent(res.data.content);
         setCategory(res.data.category_id); // Assuming category_id corresponds to the select options
         setConclusion(res.data.conclusion);
@@ -48,6 +50,7 @@ function Blogupdation() {
     const formData = new FormData();
     formData.append("category_id", category);
     formData.append("title", title);
+    formData.append("stitle", shortTitle);
     formData.append("content", content);
     formData.append("conclusion", conclusion);
 
@@ -58,7 +61,7 @@ function Blogupdation() {
 
     // Send a PUT request to update the blog post
     axios
-      .put(`https://kggeniuslabs.com:5000/blogs/update/${decodedId}`, formData, {
+      .put(`http://localhost:5000/blogs/update/${decodedId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -67,7 +70,7 @@ function Blogupdation() {
         console.log(res.data);
         if (res.data.message === "Blog updated successfully") {
           alert("Blog updated successfully!");
-          nav(`/BlogEditor/${userid}`)
+          nav(`/BlogEditor/${userid}`);
         } else if (res.data.error === "Blog not found or no changes made") {
           alert("Blog not found or no changes made");
         }
@@ -105,6 +108,18 @@ function Blogupdation() {
               className="form-control form-control1"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="form-group row my-3">
+          <label className="col-sm-2">Blog Short Title</label>
+          <div className="col-sm-10">
+            <input
+              type="text"
+              className="form-control form-control1"
+              value={shortTitle}
+              onChange={(e) => setShortTitle(e.target.value)}
             />
           </div>
         </div>

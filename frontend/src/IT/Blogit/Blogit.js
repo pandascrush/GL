@@ -5,7 +5,7 @@ import { useParams, Link } from "react-router-dom";
 
 function Blogit() {
   const { id } = useParams();
-  const decodedId = atob(id)
+  // const decodedId = atob(id)
   const [blog, setBlog] = useState(null);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
   const [categoryId, setCategoryId] = useState();
@@ -13,7 +13,7 @@ function Blogit() {
   useEffect(() => {
     // Fetch the main blog data
     axios
-      .get(`https://kggeniuslabs.com:5000/blogs/${decodedId}`)
+      .get(`http://localhost:5000/blogs/${id}`)
       .then((res) => {
         setBlog(res.data);
         setCategoryId(res.data.category_id);
@@ -21,13 +21,13 @@ function Blogit() {
       .catch((error) => {
         console.error("Error fetching blog data:", error);
       });
-  }, [decodedId]);
+  }, [id]);
 
   useEffect(() => {
     // Fetch related blogs based on category_id and exclude the current blog
     if (categoryId) {
       axios
-        .get(`https://kggeniuslabs.com:5000/relatedBlogs/${categoryId}/${decodedId}`)
+        .get(`http://localhost:5000/relatedBlogs/${categoryId}/${id}`)
         .then((res) => {
           setRelatedBlogs(res.data);
         })
@@ -35,7 +35,7 @@ function Blogit() {
           console.error("Error fetching related blogs:", error);
         });
     }
-  }, [categoryId, decodedId]);
+  }, [categoryId, id]);
 
   return (
     <div className="container blogpartcontent">
@@ -55,8 +55,8 @@ function Blogit() {
                 />
               </div>
               <div dangerouslySetInnerHTML={{ __html: blog.content }} />
-              <h5 className="text-dark fw-bold">Conclusion</h5>
-              <p className="text-dark">{blog.conclusion}</p>
+              <h5 className="fw-bold">Conclusion</h5>
+              <p>{blog.conclusion}</p>
             </>
           ) : (
             <p>Loading...</p>
@@ -71,7 +71,7 @@ function Blogit() {
             {/* Render related blogs */}
             {relatedBlogs.map((relatedBlog) => (
               <Link
-                to={`/IT_Blog/${btoa(relatedBlog.id)}`}
+                to={`/IT_Blog/${relatedBlog.unique_identifier}`}
                 key={relatedBlog.id}
                 style={{ textDecoration: "none" }}
               >

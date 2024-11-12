@@ -9,12 +9,12 @@ function InsightsIT() {
   const navigate = useNavigate();
 
   const handleReadMoreClick = (id) => {
-    navigate(`/IT_Blog/${btoa(id)}`); // Navigate to the blog details page with the blog id
+    navigate(`/IT_Blog/${id}`); // Navigate to the blog details page with the blog id
   };
 
   useEffect(() => {
     axios
-      .get(`https://kggeniuslabs.com:5000/blogs/category/2`)
+      .get(`http://localhost:5000/blogs/category/2`)
       .then((res) => {
         console.log(res.data);
         setBlogs(res.data); // Store the fetched data in state
@@ -39,10 +39,10 @@ function InsightsIT() {
                   className="card-img-top"
                 />
                 <div className="card-body">
-                  <h5 className="card-title">{blog.title}</h5>
+                  <h5 className="card-title title-ellipsis">{blog.title}</h5>
                   <button
                     className="readbtn rounded-3 p-2"
-                    onClick={() => handleReadMoreClick(blog.id)} // Pass the blog id to the handler
+                    onClick={() => handleReadMoreClick(blog.unique_identifier)} // Pass the blog id to the handler
                   >
                     Read More
                   </button>

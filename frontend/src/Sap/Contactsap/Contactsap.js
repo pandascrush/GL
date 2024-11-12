@@ -163,7 +163,7 @@ function Contactsap() {
 
     setLoading(true);
     axios
-      .post("https://kggeniuslabs.com:5000/submit-form", formValues)
+      .post("http://localhost:5000/submit-form", formValues)
       .then((response) => {
         if (response.data.message === "Form submitted successfully") {
           toast.success("Form submitted successfully");

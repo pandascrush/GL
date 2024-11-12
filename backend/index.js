@@ -172,7 +172,7 @@ app.get("/blog_categories", (req, res) => {
 
 // API endpoint to add a new blog
 app.post("/add-blog", upload.single("image"), (req, res) => {
-  const { categoryId, title, content, conclusion } = req.body;
+  const { categoryId, stitle, title, content, conclusion } = req.body;
   const blogImage = req.file;
 
   // Check if an image was uploaded and set the path accordingly
@@ -181,13 +181,13 @@ app.post("/add-blog", upload.single("image"), (req, res) => {
     : null;
 
   const query = `
-    INSERT INTO blogs (category_id, title, image, content, conclusion) 
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO blogs (category_id, title, image, content, conclusion, unique_identifier) 
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
     query,
-    [categoryId, title, blogImagePath, content, conclusion || null],
+    [categoryId, title, blogImagePath, content, conclusion || null, stitle],
     (err, result) => {
       if (err) {
         console.error("Error inserting blog:", err);
@@ -226,9 +226,11 @@ const BASE_URL = process.env.BASE_URL;
 
 // API to get blogs by IT
 app.get("/blogs/category/2", (req, res) => {
-  const sql = `SELECT *, CONCAT(?, b.image) AS blog_image 
-    FROM blogs b 
-    WHERE category_id = ? AND publish = 1`;
+  const sql = `SELECT *, CONCAT(?, b.image) AS blog_image
+FROM blogs b
+WHERE category_id = ? AND publish = 1
+ORDER BY created_at DESC;
+`;
   db.query(sql, [BASE_URL, 2], (error, results) => {
     if (error) {
       return res.status(500).json({ error: error.message });
@@ -239,9 +241,11 @@ app.get("/blogs/category/2", (req, res) => {
 
 // API to get blogs by SAP
 app.get("/blogs/category/1", (req, res) => {
-  const sql = `SELECT *, CONCAT(?, b.image) AS blog_image 
-    FROM blogs b 
-    WHERE category_id = ? AND publish = 1`;
+  const sql = `SELECT *, CONCAT(?, b.image) AS blog_image
+FROM blogs b
+WHERE category_id = ? AND publish = 1
+ORDER BY created_at DESC;
+`;
   db.query(sql, [BASE_URL, 1], (error, results) => {
     if (error) {
       return res.status(500).json({ error: error.message });
@@ -252,9 +256,11 @@ app.get("/blogs/category/1", (req, res) => {
 
 // API to get blogs by DM
 app.get("/blogs/category/3", (req, res) => {
-  const sql = `SELECT *, CONCAT(?, b.image) AS blog_image 
-    FROM blogs b 
-    WHERE category_id = ? AND publish = 1`;
+  const sql = `SELECT *, CONCAT(?, b.image) AS blog_image
+FROM blogs b
+WHERE category_id = ? AND publish = 1
+ORDER BY created_at DESC;
+`;
   db.query(sql, [BASE_URL, 3], (error, results) => {
     if (error) {
       return res.status(500).json({ error: error.message });
@@ -271,7 +277,7 @@ app.get("/blogs/:id", (req, res) => {
   const sql = `SELECT id, category_id, title, content, conclusion, created_at, 
            CONCAT(?, image) AS blog_image 
     FROM blogs 
-    WHERE id = ? AND publish = 1`;
+    WHERE unique_identifier = ? AND publish = 1`;
 
   db.query(sql, [baseUrl, blogId], (error, results) => {
     if (error) {
@@ -291,10 +297,10 @@ app.get("/relatedBlogs/:category_id/:id", (req, res) => {
 
   const query = `
     SELECT id, category_id, title, content, conclusion, 
-           CONCAT(?, image) AS blog_image, 
+           CONCAT(?, image) AS blog_image, unique_identifier, 
            created_at 
     FROM blogs 
-    WHERE category_id = ? AND id != ? AND publish = 1 
+    WHERE category_id = ? AND unique_identifier != ? AND publish = 1 
     ORDER BY created_at DESC
   `;
 
@@ -312,10 +318,12 @@ app.get("/blogs", (req, res) => {
   const blogId = req.params.id;
   const baseUrl = process.env.BASE_URL; // Set your base URL here
 
-  const sql = `SELECT id, category_id, title, content, conclusion, created_at, 
-               CONCAT(?, image) AS blog_image 
-               FROM blogs 
-               WHERE publish = 1`;
+  const sql = `SELECT id, category_id, title, unique_identifier, content, conclusion, created_at, 
+       CONCAT(?, image) AS blog_image 
+FROM blogs 
+WHERE publish = 1 
+ORDER BY created_at DESC;
+`;
 
   db.query(sql, [baseUrl], (error, results) => {
     if (error) {
@@ -337,9 +345,11 @@ app.get("/blogs/category/:category_id", (req, res) => {
       title,
       CONCAT(?, image) AS blog_image,
       content,
-      sub
+      sub,
+      created_at
     FROM blogs
     WHERE category_id = ? AND publish = 1
+    ORDER BY created_at DESC
   `;
 
   db.query(query, [BASE_URL, categoryId], (error, results) => {
@@ -356,7 +366,7 @@ app.get("/update/getblogs/:id", (req, res) => {
   const blogId = req.params.id; // Get the blog ID from the URL parameters
 
   // SQL query to get the blog details
-  const sql = `SELECT id, category_id, title, content, conclusion, created_at, 
+  const sql = `SELECT id, category_id, title,unique_identifier ,content, conclusion, created_at, 
                 CONCAT(?, image) AS blog_image 
                 FROM blogs 
                 WHERE id = ?`;
@@ -377,7 +387,7 @@ app.get("/update/getblogs/:id", (req, res) => {
 
 app.put("/blogs/update/:id", upload.single("image"), (req, res) => {
   const blogId = req.params.id;
-  const { category_id, title, content, conclusion } = req.body;
+  const { category_id, title, stitle, content, conclusion } = req.body;
   const blogImage = req.file;
 
   // Create image path if an image was uploaded
@@ -388,14 +398,14 @@ app.put("/blogs/update/:id", upload.single("image"), (req, res) => {
   // SQL query to update the blog
   const query = `
     UPDATE blogs 
-    SET category_id = ?, title = ?, content = ?, conclusion = ?, created_at = NOW()${
+    SET category_id = ?, title = ?, unique_identifier = ? ,content = ?, conclusion = ?, created_at = NOW()${
       blogImagePath ? ", image = ?" : ""
     }
     WHERE id = ?
   `;
 
   // Prepare the values to be updated
-  const values = [category_id, title, content, conclusion];
+  const values = [category_id, title, stitle, content, conclusion];
   if (blogImagePath) {
     values.push(blogImagePath); // Only push the image path if a new image was uploaded
   }
@@ -472,9 +482,11 @@ app.get("/content/blogs", (req, res) => {
   const blogId = req.params.id;
   const baseUrl = process.env.BASE_URL; // Set your base URL here
 
-  const sql = `SELECT id, category_id, title, content,publish,conclusion, created_at, 
-               CONCAT(?, image) AS blog_image 
-               FROM blogs`;
+  const sql = `SELECT id, category_id, title, unique_identifier, content, publish, conclusion, created_at, 
+       CONCAT(?, image) AS blog_image 
+FROM blogs
+ORDER BY created_at DESC;
+`;
 
   db.query(sql, [baseUrl], (error, results) => {
     if (error) {
@@ -491,13 +503,17 @@ app.get("/blogs/content/category/:category_id", (req, res) => {
   const categoryId = req.params.category_id;
   const query = `
     SELECT 
-      id,
-      title,
-      CONCAT(?, image) AS blog_image,
-      content,
-      publish
-    FROM blogs
-    WHERE category_id = ?
+    id,
+    title,
+    unique_identifier,
+    CONCAT(?, image) AS blog_image,
+    content,
+    category_id,
+    publish
+FROM blogs
+WHERE category_id = ?
+ORDER BY created_at DESC;
+
   `;
 
   db.query(query, [BASE_URL, categoryId], (error, results) => {

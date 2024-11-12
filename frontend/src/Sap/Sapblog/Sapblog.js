@@ -8,12 +8,12 @@ function Sapblog() {
   const navigate = useNavigate();
 
   const handleReadMoreClick = (id) => {
-    navigate(`/Sap_blog/${btoa(id)}`); // Navigate to the blog details page with the blog id
+    navigate(`/Sap_blog/${id}`); // Navigate to the blog details page with the blog id
   };
 
   useEffect(() => {
     axios
-      .get(`https://kggeniuslabs.com:5000/blogs/category/1`)
+      .get(`http://localhost:5000/blogs/category/1`)
       .then((res) => {
         console.log(res.data);
         setBlogs(res.data); // Store the fetched data in state
@@ -39,10 +39,10 @@ function Sapblog() {
                 className="card-img-top"
               />
               <div className="card-body">
-                <h5 className="card-title">{blog.title}</h5>
+                <h5 className="card-title title-ellipsis">{blog.title}</h5>
                 <button
                   className="readbtn rounded-3 p-2"
-                  onClick={() => handleReadMoreClick(blog.id)}
+                  onClick={() => handleReadMoreClick(blog.unique_identifier)}
                 >
                   Read More
                 </button>

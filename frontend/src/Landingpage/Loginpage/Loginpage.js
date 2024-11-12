@@ -43,7 +43,7 @@ function Loginpage() {
 
     if (isValid) {
       axios
-        .post("https://kggeniuslabs.com:5000/login", { email, password })
+        .post("http://localhost:5000/login", { email, password })
         .then((response) => {
           console.log(response);
 

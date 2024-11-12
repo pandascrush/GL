@@ -24,7 +24,7 @@ function Insights() {
   useEffect(() => {
     // Fetch latest three blogs from the API
     axios
-      .get(`https://kggeniuslabs.com:5000/latestThreeBlogs`)
+      .get(`http://localhost:5000/latestThreeBlogs`)
       .then((res) => {
         console.log(res.data);
         setBlogs(res.data); // Set the fetched blog data to state
@@ -56,11 +56,10 @@ function Insights() {
                     src={blog.blog_image} // Use the fetched image URL
                     title={blog.title}
                     alt={blog.title} // Use title as alt text
-                    className="card-img-top"
-                  />
+                    className="card-img-top"/>
                   <div className="card-body">
                     <h5 className="card-title">
-                      <b>{blog.title}</b>
+                      <b className="title-ellipsis">{blog.title}</b>
                     </h5>
                     <button
                       className="readbtn rounded-3 p-2"
